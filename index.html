@@ -1,48 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPL 2025</title> <!-- Updated Title -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPL 2025</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- DPlayer for Streaming -->
   <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
+
+  <!-- Custom CSS -->
   <style>
-    /* Keep your existing CSS here or adjust colors for IPL */
-    body { background: linear-gradient(to bottom, #1a1a1a, #0d47a1); color: white; padding-bottom: 60px; min-height: 100vh; } /* IPL Dark Blue Theme */
-    .header { background: linear-gradient(to right, #0d47a1, #1976d2); }
-    .watch-now { background: orangered; box-shadow: 0 0 10px orangered; }
-    .watch-now:hover { background: darkred; box-shadow: 0 0 15px darkred; }
-    .channel-item { border: 2px solid orangered; box-shadow: 0 0 10px orangered; }
-    .bottom-nav { background: linear-gradient(to right, #0d47a1, #1976d2); }
-    /* Other CSS remains same */
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #1a1a1a, #0d47a1);
+      color: white;
+      min-height: 100vh;
+      padding-bottom: 70px;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+    }
+    .header img {
+      height: 40px;
+    }
+    .search-icon {
+      font-size: 24px;
+    }
+
+    /* Main Poster */
+    .poster-container {
+      position: relative;
+      margin: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .poster-container img {
+      width: 100%;
+      display: block;
+    }
+    .match-details {
+      position: absolute;
+      bottom: 50px;
+      left: 20px;
+      color: white;
+    }
+    .teams {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .watch-now {
+      position: absolute;
+      bottom: 15px;
+      left: 20px;
+      background: orangered;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px orangered;
+      transition: 0.3s;
+    }
+    .watch-now:hover {
+      background: darkred;
+    }
+
+    /* Channel List */
+    .channel-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .channel-item {
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      background: #333;
+      border: 2px solid orangered;
+      box-shadow: 0 0 10px orangered;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .channel-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+    .channel-item:hover {
+      background: #444;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+      padding: 10px 0;
+    }
+    .bottom-nav i {
+      color: white;
+      font-size: 22px;
+    }
+
+    /* Video Player */
+    #dplayer {
+      width: 100%;
+      height: 220px;
+      margin-top: 20px;
+    }
   </style>
 </head>
+
 <body>
 
+  <!-- Header -->
   <div class="header">
-    <img src="https://i.ibb.co/GVzb8nJ/IPL-Logo.png" alt="IPL 2025 Logo" /> <!-- New Logo -->
+    <img src="https://i.ibb.co/GVzb8nJ/IPL-Logo.png" alt="IPL 2025">
     <i class="fas fa-search search-icon"></i>
   </div>
 
-  <!-- Main Poster (you can update to IPL-specific match) -->
+  <!-- Main Poster -->
   <div class="poster-container" id="homePoster">
-    <img src="https://i.ibb.co/0j9tXFzT/Vmake1739619446359.png" class="poster" alt="Main Poster" />
+    <img src="https://i.ibb.co/0j9tXFzT/Vmake1739619446359.png" alt="Main Poster">
     <div class="match-details">
-      <div class="teams">Mumbai Indians vs Chennai Super Kings</div> <!-- Example IPL Match -->
+      <div class="teams">Mumbai Indians vs Chennai Super Kings</div>
       <div>23 March | 7:30 PM</div>
     </div>
-    <div class="watch-now" onclick="showLiveTV()">Watch Now</div>
+    <div class="watch-now" onclick="scrollToPlayer()">Watch Now</div>
   </div>
 
-  <!-- Channel List Load Script (IPL API) -->
+  <!-- Video Player -->
+  <div id="dplayer"></div>
+
+  <!-- Channel List -->
+  <h2 style="padding: 10px 20px; margin: 0;">Live TV Channels</h2>
+  <div class="channel-list" id="channelList"></div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <i class="fas fa-home"></i>
+    <i class="fas fa-tv"></i>
+    <i class="fas fa-trophy"></i>
+    <i class="fas fa-user"></i>
+  </div>
+
+  <!-- JavaScript -->
   <script>
     const dp = new DPlayer({
       container: document.getElementById('dplayer'),
-      video: { url: '', type: 'auto' }
+      video: { url: '', type: 'auto' },
     });
 
+    // Load IPL 2025 Channels
     async function loadChannels() {
-      const response = await fetch('https://binge-api.vercel.app/ipl.json'); // IPL API
+      const response = await fetch('https://binge-api.vercel.app/ipl.json');
       const data = await response.json();
       const channelList = document.getElementById('channelList');
       channelList.innerHTML = '';
@@ -50,15 +180,27 @@
       data.channels.forEach(channel => {
         const channelItem = document.createElement('div');
         channelItem.className = 'channel-item';
-        channelItem.innerHTML = `<img src="${channel.logo}" alt="${channel.name}"><p>${channel.name}</p>`;
-        channelItem.onclick = () => { dp.switchVideo({ url: channel.url, type: 'auto' }); dp.play(); };
+        channelItem.innerHTML = `
+          <img src="${channel.logo}" alt="${channel.name}">
+          <p>${channel.name}</p>
+        `;
+        channelItem.onclick = () => {
+          dp.switchVideo({ url: channel.url, type: 'auto' });
+          dp.play();
+          scrollToPlayer();
+        };
         channelList.appendChild(channelItem);
       });
     }
 
+    // Scroll to Player Function
+    function scrollToPlayer() {
+      document.getElementById('dplayer').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load on DOM Ready
     document.addEventListener('DOMContentLoaded', loadChannels);
   </script>
 
-  <!-- Keep rest of your code same (scoreboard, navigation, etc.) -->
 </body>
 </html>
